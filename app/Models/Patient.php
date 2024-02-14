@@ -14,7 +14,7 @@ class Patient extends Model
      *
      * @var string
      */
-    protected $table = 'doctors';
+    protected $table = 'patients';
 
     /**
      * The primary key for the model.
@@ -85,7 +85,7 @@ class Patient extends Model
      * Get Visit
      * @return HasMany
     */
-    public function visit():HasMany
+    public function visits():HasMany
     {
         return $this->hasMany(Visit::class, foreignKey: 'patient_id');
     }

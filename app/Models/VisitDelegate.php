@@ -86,14 +86,4 @@ class VisitDelegate extends Model
     {
         return $this->belongsTo(Nurse::class, foreignKey: "delegate_nurse_id");
     }
-
-
-    /**
-     * Get patients List By Doctor
-     * @return HasMany
-    */
-    public function patients():HasMany
-    {
-        return $this->hasMany(Patient::class, foreignKey: 'doctor_id', localKey: 'id');
-    }
 }

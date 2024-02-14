@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Visit extends Model
 {
@@ -31,7 +32,8 @@ class Visit extends Model
     protected $fillable = [
         'visit_date',
         'nurse_id',
-        'patient_id'
+        'patient_id',
+        'visit_status'
     ];
 
     /**
@@ -98,4 +100,6 @@ class Visit extends Model
     {
         return $this->hasMany(PatientTreatment::class, foreignKey: 'visit_id', localKey: 'id');
     }
+
 }
+

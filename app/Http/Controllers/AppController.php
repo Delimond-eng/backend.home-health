@@ -192,6 +192,7 @@ class AppController extends Controller
                 "patient_phone"=>$data["phone"],
                 "patient_address"=>$data["address"],
                 "patient_gender"=>$data["gender"],
+                "doctor_id"=>$data["doctor_id"]
             ]);
             return response()->json([
                 "status"=>"success",
@@ -218,7 +219,7 @@ class AppController extends Controller
     {
         try {
             $data = $request->validate([
-                "visit_date"=>"required|date_format:Y-m-d",
+                "visit_date"=>"required|date_format:Y-m-d H:i|after:now",
                 "nurse_id"=>"required|int|exists:nurses,id",
                 "patient_id"=>"required|int|exists:patients,id",
                 "visit_id"=>"nullable|int|exists:visits,id",
@@ -226,11 +227,19 @@ class AppController extends Controller
             ]);
             if(isset($data['visit_id'])){
                 foreach ($data["treatments"] as $val){
-                    $singleTreatment= PatientTreatment::create([
-                        "patient_treatment_libelle"=>$val["libelle"],
-                        "visit_id"=>$data["visit_id"]
-                    ]);
+                    $visitId = $data['visit_id'];
+                    $singleTreatment= PatientTreatment::updateOrCreate(
+                        ["patient_treatment_libelle"=>$val["libelle"]],
+                        [
+                            "patient_treatment_libelle"=>$val["libelle"],
+                            "visit_id"=>$visitId
+                        ]
+                    );
                 }
+                return response()->json([
+                    "status"=>"success",
+                    "message"=>"visite mise à jour !"
+                ]);
             }
             else{
                 $lastVisit = Visit::create([
@@ -272,12 +281,12 @@ class AppController extends Controller
      * @param Request $request
      * @return JsonResponse
     */
-    public function delegateTreatmentToOtherNurse(Request $request):JsonResponse
+    public function delegateVisitToOtherNurse(Request $request):JsonResponse
     {
         try {
             $data = $request->validate([
                 "nurse_id"=>"required|int|exists:nurses,id",
-                "visit_id"=>"required|int|exists:visit_delegates,id"
+                "visit_id"=>"required|int|exists:visits,id"
             ]);
 
             $delegate= VisitDelegate::create([
@@ -293,6 +302,35 @@ class AppController extends Controller
                     "data"=>$delegate
                 ]);
             }
+        }
+        catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return response()->json(['errors' => $errors ]);
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            return response()->json(['errors' => $e->getMessage() ]);
+        }
+    }
+
+
+    /**
+     * Allow visit delegate for doctor
+     * @param Request $request
+     * @return JsonResponse
+    */
+    public function allowDelegateVisit(Request $request):JsonResponse
+    {
+        try {
+            $data = $request->validate([
+                "visit_delegate_id"=>"required|int|exists:visit_delegates,id"
+            ]);
+            $result = VisitDelegate::find((int)$data['visit_delegate_id']);
+            $result->visit_delegate_status = "allowed";
+            $result->save();
+            return response()->json([
+                "status"=>"success",
+                "result"=>$result
+            ]);
         }
         catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->validator->errors()->all();
@@ -325,6 +363,9 @@ class AppController extends Controller
                 "doctor_id"=>$nurse->doctor_id
             ]);
             if (isset($report)){
+                Visit::where('id', (int)$data['visit_id'])->update([
+                    'visit_status'=>'completed'
+                ]);
                 foreach ($data["treatments"] as $value){
                     PatientTreatment::where('id', (int)$value['id'])->update([
                         'patient_treatment_status'=>'completed'

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('delegate_nurse_id');
             $table->unsignedBigInteger('visit_id');
+            $table->string('visit_delegate_status')->default('pending');
             $table->timestamp('visit_delegate_created_at')->useCurrent();
         });
     }

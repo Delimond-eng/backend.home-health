@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('visit_id');
             $table->unsignedBigInteger('nurse_id');
             $table->unsignedBigInteger('doctor_id');
-            $table->unsignedBigInteger('report_status')->default('actif');
+            $table->string('report_status')->default('actif');
             $table->timestamp('report_created_at')->useCurrent();
         });
     }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('visit_date')->nullable();
             $table->unsignedBigInteger('patient_id');
             $table->unsignedBigInteger('nurse_id');
-            $table->unsignedBigInteger('visit_status')->default('pending');
+            $table->string('visit_status')->default('pending');
             $table->timestamp('visit_created_at')->useCurrent();
         });
     }
