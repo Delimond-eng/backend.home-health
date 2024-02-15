@@ -27,7 +27,6 @@ class AppController extends Controller
         try {
             $data = $request->validate([
                 "name" => "required|string",
-                "nickname" => "required|string",
                 "hospital" => "required|string",
                 "order_num" => "required|string|unique:doctors,doctor_order_num",
                 "phone" => "required|string|unique:doctors,doctor_phone",
@@ -35,8 +34,7 @@ class AppController extends Controller
                 "password" => "required|string",
             ]);
             $doctor = Doctor::create([
-                "doctor_name" => $data["name"],
-                "doctor_nickname" => $data["nickname"],
+                "doctor_fullname" => $data["name"],
                 "doctor_phone" => $data["phone"],
                 "doctor_hospital"=>$data["hospital"],
                 "doctor_order_num"=>$data["order_num"],
@@ -72,15 +70,13 @@ class AppController extends Controller
         try {
             $data = $request->validate([
                 "name"=>"required|string",
-                "nickname"=>"required|string",
                 "phone"=>"required|string|unique:nurses,nurse_phone",
                 "email"=>"required|email|unique:users,email",
                 "password"=>"required|string",
                 "doctor_id"=>"required|int|exists:doctors,id",
             ]);
             $nurse = Nurse::create([
-                "nurse_name"=>$data["name"],
-                "nurse_nickname"=>$data["nickname"],
+                "nurse_fullname"=>$data["name"],
                 "nurse_phone"=>$data["phone"],
                 "doctor_id"=>$data["doctor_id"]
             ]);
@@ -180,15 +176,13 @@ class AppController extends Controller
         try {
             $data = $request->validate([
                 "name"=>"required|string",
-                "nickname"=>"required|string",
                 "phone"=>"required|string|unique:patients,patient_phone",
                 "address"=>"required|string",
                 "gender"=>"required|string",
                 "doctor_id"=>"required|int|exists:doctors,id",
             ]);
             $lastPatient = Patient::create([
-                "patient_name"=>$data["name"],
-                "patient_nickname"=>$data["nickname"],
+                "patient_fullname"=>$data["name"],
                 "patient_phone"=>$data["phone"],
                 "patient_address"=>$data["address"],
                 "patient_gender"=>$data["gender"],

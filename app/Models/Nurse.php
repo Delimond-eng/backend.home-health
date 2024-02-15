@@ -30,8 +30,7 @@ class Nurse extends Model
      * @var array
      */
     protected $fillable = [
-        'nurse_name',
-        'nurse_nickname',
+        'nurse_fullname',
         'nurse_phone',
         'doctor_id',
     ];

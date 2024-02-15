@@ -29,7 +29,7 @@ Route::middleware(['cors'])->group(function (){
 
     //Route pour deleguer une visite à un autre collegue en attente de la confirmation du medecin ::tested
     Route::post('/visit.delegate', [\App\Http\Controllers\AppController::class, 'delegateVisitToOtherNurse']);
-    
+
     //==================== GET DATA ====================//
 
     //Voir tous les infirmier du medecin ::tested
@@ -46,6 +46,9 @@ Route::middleware(['cors'])->group(function (){
 
     //Voir le rapport pour les infirmiers ::tested
     Route::get('/nurse.reports/{period}/{nurseId}', [\App\Http\Controllers\DataController::class, 'generateReportByPeriodForNurse']);
+
+    //Voir l'agenda filtré par date de l'infirmier
+    Route::get('/nurse.schedules/{nurseId}/{date?}', [\App\Http\Controllers\DataController::class, 'viewNurseSchedule']);
 
 });
 

@@ -222,4 +222,30 @@ class DataController extends Controller
 
     }
 
+
+    /**
+     * View nurse schedule by date
+     * @param int $nurseId
+     * @param string|null $date
+     * @return JsonResponse
+     * @author Gaston delimond
+     */
+    public function viewNurseSchedule(int $nurseId,string $date=null): JsonResponse
+    {
+        $dateNow = now()->toDateString();
+        $date = $date ?? $dateNow;
+
+        $schedules = Visit::with('nurse')
+            ->with('patient')
+            ->with('treatments')
+            ->whereDate('visit_date', $date)
+            ->where('nurse_id', $nurseId)
+            ->get();
+
+        return response()->json([
+            "status" => "success",
+            "schedules" => $schedules
+        ]);
+    }
+
 }
