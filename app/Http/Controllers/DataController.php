@@ -69,6 +69,26 @@ class DataController extends Controller
 
 
     /**
+     * View all visits create by doctor
+     * @author Gaston Delimond
+     * @param int $doctorId
+     * @return JsonResponse
+    */
+    public function viewAllVisitsByDoctor(int $doctorId):JsonResponse
+    {
+        $visits  = Visit::with("nurse")
+            ->with("patient")
+            ->with("treatments")
+            ->where('doctor_id', $doctorId)
+            ->get();
+        return response()->json([
+            "status"=>"success",
+            "visits"=> $visits
+        ]);
+    }
+
+
+    /**
      * View Home visits agenda by nurse
      * @author Gaston Delimond
      * @param int $nurseId

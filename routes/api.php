@@ -41,6 +41,10 @@ Route::middleware(['cors'])->group(function (){
     //Voir le rapport pour le medecin ::tested
     Route::get('/doctor.reports/{period}/{doctorId}', [\App\Http\Controllers\DataController::class, 'generateReportByPeriodForDoctor']);
 
+
+    //Voir toutes les visites/agenda créées par un medecin
+    Route::get('/doctor.visites/{doctorId}', [\App\Http\Controllers\DataController::class, 'viewAllVisitsByDoctor']);
+
     //Voir l'agenda d'acceuil de l'Infirmier(les visites et visites deleguées) ::tested
     Route::get('/nurse.agenda/{nurseId}', [\App\Http\Controllers\DataController::class, 'viewHomeVisitsByNurse']);
 

@@ -45,7 +45,14 @@ class AppController extends Controller
                 'profile_id'=>$doctor->id,
                 'profile_type'=>'App\Models\Doctor'
             ]);
-            $doctor['user']= $user;
+            $doctor['user'] = [
+                "id"=>$doctor["id"],
+                "name"=> $doctor["doctor_fullname"],
+                "email"=> $user["email"],
+                "phone"=>$doctor["doctor_phone"],
+                "status" => "actif",
+                "profile"=> "doctor"
+            ];
             return response()->json([
                 "status" => "success",
                 "doctor" => $doctor,
@@ -124,8 +131,9 @@ class AppController extends Controller
                     return response()->json([
                         "status"=>"success",
                         "user"=>[
-                            "name"=>$doctorData['doctor_name'],
-                            "nickname"=>$doctorData['doctor_nickname'],
+                            "id"=>$doctorData["id"],
+                            "name"=>$doctorData['doctor_fullname'],
+                            "email"=>$user["email"],
                             "phone"=>$doctorData['doctor_phone'],
                             "status"=>$doctorData['doctor_status'],
                             "profile"=>"doctor"
@@ -136,8 +144,9 @@ class AppController extends Controller
                     return response()->json([
                         "status"=>"success",
                         "user"=>[
-                            "name"=>$nurseData['nurse_name'],
-                            "nickname"=>$nurseData['nurse_nickname'],
+                            "id"=>$nurseData["id"],
+                            "name"=>$nurseData['nurse_fullname'],
+                            "email"=>$user["email"],
                             "phone"=>$nurseData['nurse_phone'],
                             "status"=>$nurseData['nurse_status'],
                             "doctor_id"=>$nurseData['doctor_id'],
@@ -217,6 +226,7 @@ class AppController extends Controller
                 "nurse_id"=>"required|int|exists:nurses,id",
                 "patient_id"=>"required|int|exists:patients,id",
                 "visit_id"=>"nullable|int|exists:visits,id",
+                "doctor_id"=>"required|int|exists:doctors,id",
                 "treatments" => "required|array"
             ]);
             if(isset($data['visit_id'])){
@@ -239,6 +249,7 @@ class AppController extends Controller
                 $lastVisit = Visit::create([
                     "visit_date"=>$data["visit_date"],
                     "nurse_id"=>$data["nurse_id"],
+                    "doctor_id"=>$data["nurse_id"],
                     "patient_id"=>$data["patient_id"]
                 ]);
                 if(isset($lastVisit)){
@@ -256,7 +267,6 @@ class AppController extends Controller
                         "data"=>$lastVisit
                     ]);
                 }
-
             }
         }
         catch (\Illuminate\Validation\ValidationException $e) {
@@ -362,7 +372,7 @@ class AppController extends Controller
                 ]);
                 foreach ($data["treatments"] as $value){
                     PatientTreatment::where('id', (int)$value['id'])->update([
-                        'patient_treatment_status'=>'completed'
+                        'patient_treatment_status'=>'done'
                     ]);
                 }
                 return response()->json([

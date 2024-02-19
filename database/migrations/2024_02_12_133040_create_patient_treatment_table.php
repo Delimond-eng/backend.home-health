@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('patient_treatments', function (Blueprint $table) {
             $table->id();
             $table->string('patient_treatment_libelle');
-            $table->string('patient_treatment_status')->default('actif');
+            $table->string('patient_treatment_status')->default('pending');
             $table->unsignedBigInteger('visit_id');
             $table->timestamp('patient_treatment_created_at')->useCurrent();
         });

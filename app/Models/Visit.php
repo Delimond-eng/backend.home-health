@@ -33,6 +33,7 @@ class Visit extends Model
         'visit_date',
         'nurse_id',
         'patient_id',
+        'doctor_id',
         'visit_status'
     ];
 
